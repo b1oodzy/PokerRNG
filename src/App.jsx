@@ -10,7 +10,7 @@ export default function App() {
     <StatsProvider>
       <div className="app">
         <nav className="nav">
-          <div className="nav-logo">♠ Poker Roller</div>
+          <div className="nav-logo">Poker RNG</div>
           <div className="nav-links">
             <NavLink to="/"      end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Game</NavLink>
             <NavLink to="/stats"     className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Stats</NavLink>

@@ -1,13 +1,40 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 import { COMBOS } from '../data/constants'
  
 const StatsContext = createContext(null)
  
+const STORAGE_KEY = 'pokerRollerStats'
+ 
+function loadStats() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}
+
+function saveStats(totalRolls, rollCounts) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ totalRolls, rollCounts }))
+  } catch {
+    // Storage unavailable — fail silently
+  }
+}
+ 
 export function StatsProvider({ children }) {
-  const [totalRolls, setTotalRolls] = useState(0)
+  const saved = loadStats()
+ 
+  const [totalRolls, setTotalRolls] = useState(saved?.totalRolls ?? 0)
   const [rollCounts, setRollCounts] = useState(
-    Object.fromEntries(COMBOS.map(c => [c, 0]))
+    saved?.rollCounts ?? Object.fromEntries(COMBOS.map(c => [c, 0]))
   )
+ 
+  // Persist whenever stats change
+  useEffect(() => {
+    saveStats(totalRolls, rollCounts)
+  }, [totalRolls, rollCounts])
  
   function recordRoll(comboName) {
     setTotalRolls(t => t + 1)

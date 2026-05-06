@@ -1,3 +1,9 @@
+@keyframes card-flip {
+  0%   { transform: scaleX(1); }
+  50%  { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+ 
 .card {
   width: 108px;
   height: 158px;
@@ -6,6 +12,10 @@
   border-radius: 10px;
   position: relative;
   flex-shrink: 0;
+}
+ 
+.card--flipping {
+  animation: card-flip 500ms ease forwards;
 }
  
 .card--back {
