@@ -1,0 +1,134 @@
+.tracker {
+  background: #1a4731;
+  border: 5px solid #13321f;
+  border-radius: 25px;
+  padding: 32px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+ 
+.tracker__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #13321f;
+}
+ 
+.tracker__title {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: #5a9e78;
+  text-transform: uppercase;
+}
+ 
+.tracker__total-wrap { text-align: right; }
+ 
+.tracker__total {
+  font-size: 26px;
+  font-weight: 900;
+  color: #c9a84c;
+  line-height: 1;
+}
+ 
+.tracker__total-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #5a9e78;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+ 
+.tracker__rows {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+ 
+.tracker__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #13321f;
+  gap: 12px;
+}
+.tracker__row:last-child { border-bottom: none; }
+ 
+.tracker__row--highlight .tracker__combo-name { color: #fdfaf5; }
+ 
+.tracker__row-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+ 
+.tracker__combo-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: #4a7a60;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+ 
+.tracker__bar-track {
+  height: 4px;
+  background: #13321f;
+  border-radius: 99px;
+  overflow: hidden;
+}
+ 
+.tracker__bar-fill {
+  height: 100%;
+  background: #c9a84c;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+ 
+.tracker__row-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+}
+ 
+.tracker__count {
+  font-size: 15px;
+  font-weight: 900;
+  color: #c9a84c;
+  min-width: 28px;
+  text-align: right;
+}
+ 
+.tracker__pct {
+  font-size: 10px;
+  font-weight: 800;
+  color: #5a9e78;
+  text-align: right;
+}
+ 
+.tracker__reset-btn {
+  margin-top: 18px;
+  background: transparent;
+  border: 2px solid #13321f;
+  border-radius: 50px;
+  color: #4a7a60;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  padding: 8px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: 'Nunito', sans-serif;
+  transition: border-color 0.15s, color 0.15s;
+  align-self: center;
+}
+
+.tracker__reset-btn:hover { border-color: #5a9e78; color: #5a9e78; }

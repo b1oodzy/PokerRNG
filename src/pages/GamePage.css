@@ -1,0 +1,44 @@
+.game-page {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 16px;
+  width: var(--nav-width);
+  align-items: stretch;
+}
+ 
+.felt {
+  background: #1a4731;
+  border: 5px solid #13321f;
+  border-radius: 25px;
+  padding: 40px 40px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+ 
+.felt__title {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: #5a9e78;
+  text-transform: uppercase;
+}
+ 
+.roll-btn {
+  background: #c9a84c;
+  border: none;
+  border-radius: 50px;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  padding: 14px 56px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: 'Nunito', sans-serif;
+  transition: background 0.15s, transform 0.1s;
+}
+.roll-btn:hover  { background: #d4b05a; }
+.roll-btn:active { background: #b8943e; transform: scale(0.96); }

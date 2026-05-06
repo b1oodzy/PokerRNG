@@ -1,0 +1,14 @@
+.hand {
+  display: flex;
+  flex-direction: column;
+}
+ 
+.hand__row {
+  display: flex;
+  gap: 14px;
+  margin-top: -30px;
+}
+ 
+.hand__row:first-child {
+  margin-top: 0;
+}

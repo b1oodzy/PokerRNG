@@ -1,0 +1,144 @@
+.stats-page {
+  width: var(--nav-width);
+}
+ 
+.stats-panel {
+  background: #1a4731;
+  border: 5px solid #13321f;
+  border-radius: 25px;
+  padding: 48px 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+ 
+.stats-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+ 
+.stats-panel__title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #5a9e78;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+ 
+.stats-panel__sub {
+  font-size: 13px;
+  font-weight: 700;
+  color: #4a7a60;
+  margin-top: 4px;
+}
+ 
+.stats-panel__total-wrap { text-align: right; }
+ 
+.stats-panel__total {
+  font-size: 40px;
+  font-weight: 900;
+  color: #c9a84c;
+  line-height: 1;
+}
+ 
+.stats-panel__total-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #5a9e78;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+ 
+.stats-table {
+  display: flex;
+  flex-direction: column;
+}
+ 
+.stats-table__head {
+  display: grid;
+  grid-template-columns: 1.6fr 0.5fr 1.8fr 0.8fr;
+  gap: 12px;
+  padding: 0 0 10px;
+  border-bottom: 2px solid #13321f;
+  font-size: 10px;
+  font-weight: 900;
+  color: #4a7a60;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+ 
+.stats-table__row {
+  display: grid;
+  grid-template-columns: 1.6fr 0.5fr 1.8fr 0.8fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #13321f;
+  align-items: center;
+}
+.stats-table__row:last-child { border-bottom: none; }
+ 
+.stats-table__name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fdfaf5;
+}
+ 
+.stats-table__count {
+  font-size: 15px;
+  font-weight: 900;
+  color: #c9a84c;
+}
+ 
+.stats-table__pct-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ 
+.stats-table__bar-track {
+  flex: 1;
+  height: 5px;
+  background: #13321f;
+  border-radius: 99px;
+  overflow: hidden;
+}
+ 
+.stats-table__bar-fill {
+  height: 100%;
+  background: #c9a84c;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+ 
+.stats-table__pct {
+  font-size: 12px;
+  font-weight: 800;
+  color: #5a9e78;
+  min-width: 44px;
+  text-align: right;
+}
+ 
+.stats-table__odds {
+  font-size: 11px;
+  font-weight: 800;
+  color: #4a7a60;
+  text-align: right;
+}
+ 
+.stats-reset-btn {
+  align-self: center;
+  background: transparent;
+  border: 2px solid #13321f;
+  border-radius: 50px;
+  color: #4a7a60;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  padding: 10px 28px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: 'Nunito', sans-serif;
+  transition: border-color 0.15s, color 0.15s;
+}
+.stats-reset-btn:hover { border-color: #5a9e78; color: #5a9e78; }
