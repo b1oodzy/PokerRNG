@@ -1,11 +1,12 @@
 import React from 'react'
 import { useStats } from '../context/StatsContext'
-import { COMBOS } from '../data/constants'
+import { COMBOS_BY_CHAPTER } from '../data/constants'
 import './StatTracker.css'
  
 export default function StatTracker({ lastCombo }) {
-  const { totalRolls, rollCounts, resetStats } = useStats()
-  const maxCount = Math.max(...Object.values(rollCounts), 1)
+  const { activeChapter, totalRolls, rollCounts, resetStats } = useStats()
+  const combos   = COMBOS_BY_CHAPTER[activeChapter.id]
+  const maxCount = Math.max(...combos.map(c => rollCounts[c] ?? 0), 1)
  
   return (
     <div className="tracker">
@@ -18,8 +19,8 @@ export default function StatTracker({ lastCombo }) {
       </div>
  
       <div className="tracker__rows">
-        {COMBOS.map(name => {
-          const count = rollCounts[name]
+        {combos.map(name => {
+          const count = rollCounts[name] ?? 0
           const pct   = totalRolls > 0 ? (count / totalRolls * 100).toFixed(1) + '%' : '—'
           const barW  = (count / maxCount * 100).toFixed(1) + '%'
           const isLast = name === lastCombo

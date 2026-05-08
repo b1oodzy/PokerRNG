@@ -21,15 +21,33 @@ export const RANKS = [
   { l: 'K',  n: 'King',  v: 13 },
 ]
  
-export const COMBOS = [
-  'Royal Flush',
-  'Straight Flush',
-  'Four of a Kind',
-  'Full House',
-  'Flush',
-  'Straight',
-  'Three of a Kind',
-  'Two Pair',
-  'One Pair',
-  'High Card',
+export const CHAPTERS = [
+  { id: 1, name: 'Chapter I',   cards: 1 },
+  { id: 2, name: 'Chapter II',  cards: 2 },
+  { id: 3, name: 'Chapter III', cards: 3 },
+  { id: 4, name: 'Chapter IV',  cards: 4 },
+  { id: 5, name: 'Chapter V',   cards: 5 },
 ]
+ 
+// Combos per chapter — fill in chapters 1-4 when ready
+export const COMBOS_BY_CHAPTER = {
+  1: ['High Card'],
+  2: ['High Card'],       // placeholder
+  3: ['High Card'],       // placeholder
+  4: ['High Card'],       // placeholder
+  5: [
+    'Royal Flush',
+    'Straight Flush',
+    'Four of a Kind',
+    'Full House',
+    'Flush',
+    'Straight',
+    'Three of a Kind',
+    'Two Pair',
+    'One Pair',
+    'High Card',
+  ],
+}
+ 
+// Keep COMBOS as an alias for chapter 5 so existing evaluate.js still works
+export const COMBOS = COMBOS_BY_CHAPTER[5]

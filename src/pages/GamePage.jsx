@@ -8,16 +8,24 @@ import { useStats } from '../context/StatsContext'
 import { useAutoRoll, FLIP_MS, MANUAL_LOCK_MS, AUTO_MS } from '../hooks/useAutoRoll'
 import './GamePage.css'
  
-const HAND_SIZE = 5
- 
 export default function GamePage() {
+  const { activeChapter, recordRoll } = useStats()
+  const handSize = activeChapter.cards
+ 
   const [cards, setCards]         = useState(null)
   const [result, setResult]       = useState(null)
   const [lastCombo, setLastCombo] = useState(null)
   const [flipping, setFlipping]   = useState(false)
   const [manualKey, setManualKey] = useState(0)
   const [autoKey, setAutoKey]     = useState(0)
-  const { recordRoll } = useStats()
+ 
+  // Reset table when chapter changes
+  useEffect(() => {
+    setCards(null)
+    setResult(null)
+    setLastCombo(null)
+    setFlipping(false)
+  }, [activeChapter.id])
  
   const rollOnce = useCallback((isAuto = false) => {
     if (isAuto) setAutoKey(k => k + 1)
@@ -25,7 +33,7 @@ export default function GamePage() {
  
     setFlipping(true)
     setTimeout(() => {
-      const newCards  = dealHand(HAND_SIZE)
+      const newCards  = dealHand(handSize)
       const newResult = evaluate(newCards)
       setCards(newCards)
       setResult(newResult)
@@ -33,44 +41,44 @@ export default function GamePage() {
       recordRoll(newResult.rank)
     }, FLIP_MS)
     setTimeout(() => setFlipping(false), FLIP_MS * 2)
-  }, [recordRoll])
+  }, [recordRoll, handSize])
  
   const { autoRolling, toggleAuto, tryRoll } = useAutoRoll(rollOnce)
  
-  // Wrap toggleAuto so enabling auto immediately shows the first bar
+  // Stop auto-roll when chapter changes
+  useEffect(() => {
+    if (autoRolling) toggleAuto()
+  }, [activeChapter.id])
+ 
   function handleToggleAuto() {
     if (!autoRolling) setAutoKey(k => k + 1)
     toggleAuto()
-  }
- 
-  function handleManualRoll() {
-    tryRoll()
   }
  
   useEffect(() => {
     function onKey(e) {
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault()
-        handleManualRoll()
+        tryRoll()
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [tryRoll])
  
-  const displayCards = cards ?? Array(HAND_SIZE).fill(null)
+  const displayCards = cards ?? Array(handSize).fill(null)
   const faceDown     = cards === null
  
   return (
     <div className="game-page">
       <div className="felt">
-        <div className="felt__title">Card Draw</div>
+        <div className="felt__title">{activeChapter.name}</div>
         <Hand cards={displayCards} flipping={flipping} faceDown={faceDown} />
         <ResultBanner result={result} />
         <div className="felt__buttons">
           <button
             className="roll-btn"
-            onClick={handleManualRoll}
+            onClick={tryRoll}
             disabled={autoRolling}
             style={{ '--cooldown-ms': `${MANUAL_LOCK_MS}ms` }}
           >

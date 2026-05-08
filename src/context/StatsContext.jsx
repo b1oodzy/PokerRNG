@@ -1,53 +1,92 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { COMBOS } from '../data/constants'
+import { CHAPTERS, COMBOS_BY_CHAPTER } from '../data/constants'
  
 const StatsContext = createContext(null)
  
-const STORAGE_KEY = 'pokerRollerStats'
+function storageKey(chapterId) {
+  return `pokerRollerStats_ch${chapterId}`
+}
  
-function loadStats() {
+function loadStats(chapterId) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(storageKey(chapterId))
     if (!raw) return null
     return JSON.parse(raw)
   } catch {
     return null
   }
 }
-
-function saveStats(totalRolls, rollCounts) {
+ 
+function saveStats(chapterId, totalRolls, rollCounts) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ totalRolls, rollCounts }))
-  } catch {
-    // Storage unavailable — fail silently
+    localStorage.setItem(storageKey(chapterId), JSON.stringify({ totalRolls, rollCounts }))
+  } catch {}
+}
+ 
+function emptyStats(chapterId) {
+  return {
+    totalRolls: 0,
+    rollCounts: Object.fromEntries(COMBOS_BY_CHAPTER[chapterId].map(c => [c, 0])),
   }
 }
  
 export function StatsProvider({ children }) {
-  const saved = loadStats()
+  const [activeChapter, setActiveChapter] = useState(CHAPTERS[0])
  
-  const [totalRolls, setTotalRolls] = useState(saved?.totalRolls ?? 0)
-  const [rollCounts, setRollCounts] = useState(
-    saved?.rollCounts ?? Object.fromEntries(COMBOS.map(c => [c, 0]))
-  )
+  // Per-chapter stats cache — load all chapters upfront
+  const [statsMap, setStatsMap] = useState(() => {
+    const map = {}
+    for (const ch of CHAPTERS) {
+      const saved = loadStats(ch.id)
+      map[ch.id] = saved ?? emptyStats(ch.id)
+    }
+    return map
+  })
  
-  // Persist whenever stats change
+  const chId         = activeChapter.id
+  const totalRolls   = statsMap[chId]?.totalRolls ?? 0
+  const rollCounts   = statsMap[chId]?.rollCounts ?? {}
+ 
+  // Persist whenever stats for any chapter change
   useEffect(() => {
-    saveStats(totalRolls, rollCounts)
-  }, [totalRolls, rollCounts])
+    for (const ch of CHAPTERS) {
+      const s = statsMap[ch.id]
+      if (s) saveStats(ch.id, s.totalRolls, s.rollCounts)
+    }
+  }, [statsMap])
  
   function recordRoll(comboName) {
-    setTotalRolls(t => t + 1)
-    setRollCounts(prev => ({ ...prev, [comboName]: prev[comboName] + 1 }))
+    setStatsMap(prev => {
+      const cur = prev[chId]
+      return {
+        ...prev,
+        [chId]: {
+          totalRolls: cur.totalRolls + 1,
+          rollCounts: {
+            ...cur.rollCounts,
+            [comboName]: (cur.rollCounts[comboName] ?? 0) + 1,
+          },
+        },
+      }
+    })
   }
  
   function resetStats() {
-    setTotalRolls(0)
-    setRollCounts(Object.fromEntries(COMBOS.map(c => [c, 0])))
+    setStatsMap(prev => ({
+      ...prev,
+      [chId]: emptyStats(chId),
+    }))
   }
  
   return (
-    <StatsContext.Provider value={{ totalRolls, rollCounts, recordRoll, resetStats }}>
+    <StatsContext.Provider value={{
+      activeChapter,
+      setActiveChapter,
+      totalRolls,
+      rollCounts,
+      recordRoll,
+      resetStats,
+    }}>
       {children}
     </StatsContext.Provider>
   )

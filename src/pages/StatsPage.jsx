@@ -1,32 +1,42 @@
 import React from 'react'
 import { useStats } from '../context/StatsContext'
-import { COMBOS } from '../data/constants'
+import { COMBOS_BY_CHAPTER } from '../data/constants'
 import './StatsPage.css'
  
-// Approximate real-world probabilities for a 5-card hand
-const ODDS = {
-  'Royal Flush':    '0.000154%',
-  'Straight Flush': '0.00139%',
-  'Four of a Kind': '0.0240%',
-  'Full House':     '0.1441%',
-  'Flush':          '0.1965%',
-  'Straight':       '0.3925%',
-  'Three of a Kind':'2.1128%',
-  'Two Pair':       '4.7539%',
-  'One Pair':       '42.2569%',
-  'High Card':      '50.1177%',
+// Fill in odds per chapter when ready — keyed as { chapterId: { comboName: '%' } }
+const ODDS_BY_CHAPTER = {
+  1: {
+    'High Card': '100%',
+  },
+  2: {},
+  3: {},
+  4: {},
+  5: {
+    'Royal Flush':    '0.000154%',
+    'Straight Flush': '0.00139%',
+    'Four of a Kind': '0.0240%',
+    'Full House':     '0.1441%',
+    'Flush':          '0.1965%',
+    'Straight':       '0.3925%',
+    'Three of a Kind':'2.1128%',
+    'Two Pair':       '4.7539%',
+    'One Pair':       '42.2569%',
+    'High Card':      '50.1177%',
+  },
 }
  
 export default function StatsPage() {
-  const { totalRolls, rollCounts, resetStats } = useStats()
-  const maxCount = Math.max(...Object.values(rollCounts), 1)
+  const { activeChapter, totalRolls, rollCounts, resetStats } = useStats()
+  const combos   = COMBOS_BY_CHAPTER[activeChapter.id]
+  const odds     = ODDS_BY_CHAPTER[activeChapter.id] ?? {}
+  const maxCount = Math.max(...combos.map(c => rollCounts[c] ?? 0), 1)
  
   return (
     <div className="stats-page">
       <div className="stats-panel">
         <div className="stats-panel__header">
           <div>
-            <h1 className="stats-panel__title">Roll History</h1>
+            <h1 className="stats-panel__title">{activeChapter.name}</h1>
             <p className="stats-panel__sub">Your results vs. real-world odds</p>
           </div>
           <div className="stats-panel__total-wrap">
@@ -42,8 +52,8 @@ export default function StatsPage() {
             <span>Your %</span>
             <span>True Odds</span>
           </div>
-          {COMBOS.map(name => {
-            const count = rollCounts[name]
+          {combos.map(name => {
+            const count = rollCounts[name] ?? 0
             const pct   = totalRolls > 0 ? (count / totalRolls * 100).toFixed(2) + '%' : '—'
             const barW  = (count / maxCount * 100).toFixed(1) + '%'
  
@@ -57,7 +67,7 @@ export default function StatsPage() {
                   </div>
                   <span className="stats-table__pct">{pct}</span>
                 </div>
-                <span className="stats-table__odds">{ODDS[name]}</span>
+                <span className="stats-table__odds">{odds[name] ?? '—'}</span>
               </div>
             )
           })}
