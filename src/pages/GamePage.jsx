@@ -7,18 +7,18 @@ import { evaluate } from '../utils/evaluate'
 import { useStats } from '../context/StatsContext'
 import { useAutoRoll, FLIP_MS, MANUAL_LOCK_MS, AUTO_MS } from '../hooks/useAutoRoll'
 import './GamePage.css'
- 
+
 export default function GamePage() {
   const { activeChapter, recordRoll } = useStats()
   const handSize = activeChapter.cards
- 
+  
   const [cards, setCards]         = useState(null)
   const [result, setResult]       = useState(null)
   const [lastCombo, setLastCombo] = useState(null)
   const [flipping, setFlipping]   = useState(false)
   const [manualKey, setManualKey] = useState(0)
   const [autoKey, setAutoKey]     = useState(0)
- 
+  
   // Reset table when chapter changes
   useEffect(() => {
     setCards(null)
@@ -26,35 +26,35 @@ export default function GamePage() {
     setLastCombo(null)
     setFlipping(false)
   }, [activeChapter.id])
- 
+  
   const rollOnce = useCallback((isAuto = false) => {
     if (isAuto) setAutoKey(k => k + 1)
     else        setManualKey(k => k + 1)
- 
+  
     setFlipping(true)
     setTimeout(() => {
       const newCards  = dealHand(handSize)
-      const newResult = evaluate(newCards)
+      const newResult = evaluate(newCards, activeChapter.id)
       setCards(newCards)
       setResult(newResult)
       setLastCombo(newResult.rank)
       recordRoll(newResult.rank)
     }, FLIP_MS)
     setTimeout(() => setFlipping(false), FLIP_MS * 2)
-  }, [recordRoll, handSize])
- 
+  }, [recordRoll, handSize, activeChapter.id])
+  
   const { autoRolling, toggleAuto, tryRoll } = useAutoRoll(rollOnce)
- 
+  
   // Stop auto-roll when chapter changes
   useEffect(() => {
     if (autoRolling) toggleAuto()
   }, [activeChapter.id])
- 
+  
   function handleToggleAuto() {
     if (!autoRolling) setAutoKey(k => k + 1)
     toggleAuto()
   }
- 
+  
   useEffect(() => {
     function onKey(e) {
       if (e.code === 'Space' || e.code === 'Enter') {
@@ -65,10 +65,10 @@ export default function GamePage() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [tryRoll])
- 
+  
   const displayCards = cards ?? Array(handSize).fill(null)
   const faceDown     = cards === null
- 
+  
   return (
     <div className="game-page">
       <div className="felt">

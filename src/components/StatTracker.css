@@ -7,7 +7,7 @@
   flex-direction: column;
   align-self: stretch;
 }
- 
+
 .tracker__header {
   display: flex;
   justify-content: space-between;
@@ -16,7 +16,7 @@
   padding-bottom: 16px;
   border-bottom: 2px solid #13321f;
 }
- 
+
 .tracker__title {
   font-size: 12px;
   font-weight: 900;
@@ -24,16 +24,16 @@
   color: #5a9e78;
   text-transform: uppercase;
 }
- 
+
 .tracker__total-wrap { text-align: right; }
- 
+
 .tracker__total {
   font-size: 26px;
   font-weight: 900;
   color: #c9a84c;
   line-height: 1;
 }
- 
+
 .tracker__total-label {
   font-size: 10px;
   font-weight: 800;
@@ -41,14 +41,14 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
- 
+
 .tracker__rows {
   display: flex;
   flex-direction: column;
   flex: 1;
   justify-content: space-between;
 }
- 
+
 .tracker__row {
   display: flex;
   align-items: center;
@@ -58,9 +58,9 @@
   gap: 12px;
 }
 .tracker__row:last-child { border-bottom: none; }
- 
+
 .tracker__row--highlight .tracker__combo-name { color: #fdfaf5; }
- 
+
 .tracker__row-left {
   display: flex;
   flex-direction: column;
@@ -68,7 +68,7 @@
   flex: 1;
   min-width: 0;
 }
- 
+
 .tracker__combo-name {
   font-size: 12px;
   font-weight: 800;
@@ -76,21 +76,21 @@
   white-space: nowrap;
   transition: color 0.3s;
 }
- 
+
 .tracker__bar-track {
   height: 4px;
   background: #13321f;
   border-radius: 99px;
   overflow: hidden;
 }
- 
+
 .tracker__bar-fill {
   height: 100%;
   background: #c9a84c;
   border-radius: 99px;
   transition: width 0.4s ease;
 }
- 
+
 .tracker__row-right {
   display: flex;
   flex-direction: column;
@@ -98,7 +98,7 @@
   gap: 1px;
   flex-shrink: 0;
 }
- 
+
 .tracker__count {
   font-size: 15px;
   font-weight: 900;
@@ -106,14 +106,14 @@
   min-width: 28px;
   text-align: right;
 }
- 
+
 .tracker__pct {
   font-size: 10px;
   font-weight: 800;
   color: #5a9e78;
   text-align: right;
 }
- 
+
 .tracker__reset-btn {
   margin-top: 18px;
   background: transparent;
