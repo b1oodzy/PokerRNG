@@ -21,7 +21,7 @@
 .stats-panel__title {
   font-size: 28px;
   font-weight: 900;
-  color: #5a9e78;
+  color: #fdfaf5;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -29,7 +29,7 @@
 .stats-panel__sub {
   font-size: 13px;
   font-weight: 700;
-  color: #4a7a60;
+  color: #5a9e78;
   margin-top: 4px;
 }
 
@@ -63,7 +63,7 @@
   border-bottom: 2px solid #13321f;
   font-size: 10px;
   font-weight: 900;
-  color: #4a7a60;
+  color: #5a9e78;
   text-transform: uppercase;
   letter-spacing: 0.15em;
 }
@@ -85,7 +85,7 @@
 }
 
 .stats-table__name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   color: #fdfaf5;
 }
@@ -127,7 +127,7 @@
 .stats-table__pct {
   font-size: 12px;
   font-weight: 800;
-  color: #5a9e78;
+  color: #fdfaf5;
   min-width: 44px;
   text-align: right;
 }
@@ -135,7 +135,7 @@
 .stats-table__odds {
   font-size: 11px;
   font-weight: 800;
-  color: #4a7a60;
+  color: #5a9e78;
   text-align: right;
 }
 
@@ -144,7 +144,7 @@
   background: transparent;
   border: 2px solid #13321f;
   border-radius: 50px;
-  color: #4a7a60;
+  color: #5a9e78;
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.12em;

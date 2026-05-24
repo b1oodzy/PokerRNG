@@ -92,7 +92,7 @@ export const COMBOS_CH5 = [
   { name: 'Three of a Kind',   desc: 'Three cards of the same rank.', count: 54912 },
   { name: 'Two Pair',          desc: 'Two distinct pairs.', count: 123552 },
   { name: 'One Pair',          desc: 'Two cards of the same rank.', count: 1098240 },
-  { name: 'High Card',         desc: 'Sometimes, luck just isn\'t on your side.', count: 1301520 },
+  { name: 'High Card',         desc: 'Sometimes, luck just isn\'t on your side.', count: 1302540 },
 ]
 
 // Map chapter ID to combo arrays (names only for backward compat)
