@@ -98,3 +98,30 @@
   justify-content: center;
   width: var(--nav-width);
 }
+
+.nav-economy {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.nav-economy__item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #13321f;
+  border-radius: 99px;
+  padding: 5px 14px 5px 10px;
+}
+
+.nav-economy__icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.nav-economy__value {
+  font-size: 13px;
+  font-weight: 900;
+  color: #c9a84c;
+  letter-spacing: 0.04em;
+}

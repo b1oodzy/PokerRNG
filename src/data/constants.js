@@ -29,6 +29,15 @@ export const CHAPTERS = [
   { id: 5, name: 'Chapter V',   cards: 5 },
 ]
 
+// C(52, n) — total possible combinations per chapter
+export const CHAPTER_TOTALS = {
+  1: 52,
+  2: 1326,
+  3: 22100,
+  4: 270725,
+  5: 2598960,
+}
+
 // Each combo: { name, desc, count }
 // Chapter 1 (52 total)
 export const COMBOS_CH1 = [
