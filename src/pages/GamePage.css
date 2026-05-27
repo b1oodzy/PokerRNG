@@ -2,7 +2,7 @@
   from { transform: scaleX(1); }
   to   { transform: scaleX(0); }
 }
- 
+
 .game-page {
   display: grid;
   grid-template-columns: 1fr 260px;
@@ -10,7 +10,7 @@
   width: var(--nav-width);
   align-items: stretch;
 }
- 
+
 .felt {
   background: #1a4731;
   border: 5px solid #13321f;
@@ -22,21 +22,24 @@
   justify-content: center;
   gap: 28px;
 }
- 
+
 .felt__title {
   font-size: 26px;
   font-weight: 900;
   letter-spacing: 0.1em;
   color: #c9a84c;
   text-transform: uppercase;
+  /* Extra bottom breathing room so HOLD labels on lifted cards don't overlap */
+  margin-bottom: 18px;
 }
- 
+
 .felt__buttons {
   display: flex;
   gap: 12px;
   align-items: center;
 }
- 
+
+/* ── Draw / Play button ───────────────────────────────── */
 .roll-btn {
   background: #c9a84c;
   border: none;
@@ -45,25 +48,57 @@
   font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.14em;
-  padding: 14px 40px;
+  /* Fixed width so the cooldown bar never reshapes when text changes */
+  min-width: 200px;
+  padding: 14px 28px;
   cursor: pointer;
   text-transform: uppercase;
   font-family: 'Nunito', sans-serif;
   transition: background 0.15s, transform 0.1s, opacity 0.15s;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 8px;
   position: relative;
   overflow: hidden;
   isolation: isolate;
 }
 .roll-btn:hover:not(:disabled)  { background: #d4b05a; }
 .roll-btn:active:not(:disabled) { background: #b8943e; transform: scale(0.96); }
-.roll-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.roll-btn:disabled               { opacity: 0.4; cursor: not-allowed; }
+
+/* Fixed-width label so badge + hint don't shift when Draw↔Play */
+.roll-btn__label {
+  /* Wide enough for "Draw" and "Play" — keeps siblings from moving */
+  min-width: 3.2em;
+  text-align: center;
+  position: relative;
+  z-index: 1;
 }
- 
+
+/* Discard counter — inline pill, left of label */
+.roll-btn__discard-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.18);
+  color: #1a1a1a;
+  font-size: 11px;
+  font-weight: 900;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: background 0.2s, color 0.2s;
+}
+/* When 0 discards remain, badge becomes a muted indicator */
+.roll-btn__discard-badge--empty {
+  background: rgba(0,0,0,0.10);
+  color: rgba(26,26,26,0.45);
+}
+
 .roll-btn__hint {
   font-size: 10px;
   font-weight: 900;
@@ -75,12 +110,8 @@
   position: relative;
   z-index: 1;
 }
- 
-.roll-btn > *:not(.btn-cooldown-bar) {
-  position: relative;
-  z-index: 1;
-}
- 
+
+/* ── Auto draw button ─────────────────────────────────── */
 .auto-btn {
   background: transparent;
   border: 2px solid #13321f;
@@ -99,7 +130,6 @@
   isolation: isolate;
 }
 .auto-btn:hover { border-color: #5a9e78; color: #5a9e78; }
- 
 .auto-btn--active {
   background: #13321f;
   border-color: #c9a84c;
@@ -110,12 +140,12 @@
   border-color: #d4b05a;
   color: #d4b05a;
 }
- 
 .auto-btn > *:not(.btn-cooldown-bar) {
   position: relative;
   z-index: 1;
 }
- 
+
+/* ── Cooldown bar (shared) ────────────────────────────── */
 .btn-cooldown-bar {
   position: absolute;
   top: 0;
@@ -123,7 +153,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.18);
-  border-radius: 0;
+  border-radius: inherit;
   transform-origin: left;
   z-index: 0;
   animation: cooldown-sweep var(--cooldown-ms) linear forwards;

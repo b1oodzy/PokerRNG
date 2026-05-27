@@ -15,21 +15,21 @@ const CHAPTER_UPGRADES = CHAPTERS.map((ch, i) => ({
     'Four-card hands — full poker tactics apply.',
     'Five cards. The complete game begins.',
   ][i],
-  xpCost: 0, // free for dev testing
+  xpCost: 0,
 }))
 
-// ── Discard upgrade tiers ─────────────────────────────────────────
+// ── Discard upgrade tiers (free for dev testing) ──────────────────
 const DISCARD_TIERS = [
-  { level: 1, label: '1 Discard',  coinCost: 500,   desc: 'Keep your best card, redraw the rest.' },
-  { level: 2, label: '2 Discards', coinCost: 2500,  desc: 'Two chances to improve your hand.' },
-  { level: 3, label: '3 Discards', coinCost: 10000, desc: 'Master-level control over your draw.' },
+  { level: 1, label: '1 Discard',  coinCost: 0,  desc: 'Keep your best card, redraw the rest.' },
+  { level: 2, label: '2 Discards', coinCost: 0,  desc: 'Two chances to improve your hand.' },
+  { level: 3, label: '3 Discards', coinCost: 0,  desc: 'Master-level control over your draw.' },
 ]
 
-// ── Roll speed upgrade tiers ──────────────────────────────────────
+// ── Roll speed upgrade tiers (free for dev testing) ───────────────
 const SPEED_TIERS = [
-  { level: 1, label: 'Fast',    coinCost: 750,   desc: 'Auto-roll every 1.5 seconds.' },
-  { level: 2, label: 'Faster',  coinCost: 3000,  desc: 'Auto-roll every 1 second.' },
-  { level: 3, label: 'Instant', coinCost: 12000, desc: 'Auto-roll at maximum speed.' },
+  { level: 1, label: 'Fast',    coinCost: 0, desc: 'Auto-draw every 1.5 seconds.' },
+  { level: 2, label: 'Faster',  coinCost: 0, desc: 'Auto-draw every 1 second.' },
+  { level: 3, label: 'Instant', coinCost: 0, desc: 'Auto-draw at maximum speed.' },
 ]
 
 // ── Sub-components ────────────────────────────────────────────────
@@ -103,35 +103,31 @@ function ChapterSection({ activeChapter, setActiveChapter }) {
   )
 }
 
-function TierSection({ color, cssClass, tiers, currentLevel, currency, currencyIcon, label }) {
+function TierSection({ tiers, currentLevel, currencyIcon }) {
   return (
-    <div className={`upgrades-section ${cssClass}`}>
-      <div className="tier-grid">
-        {tiers.map(tier => {
-          const owned    = currentLevel >= tier.level
-          const isNext   = currentLevel === tier.level - 1
-          return (
-            <div key={tier.level} className={`tier-card${owned ? ' tier-card--owned' : ''}${isNext ? ' tier-card--next' : ''}`}>
-              <div className="tier-card__level">Tier {tier.level}</div>
-              <div className="tier-card__label">{tier.label}</div>
-              <div className="tier-card__desc">{tier.desc}</div>
-              <button
-                className="tier-card__btn"
-                disabled={owned || !isNext}
-                style={{ '--tier-accent': color }}
-              >
-                {owned
-                  ? '✓ Owned'
-                  : <>
-                      <span className="tier-card__btn-icon">{currencyIcon}</span>
-                      {formatNum(tier.coinCost)}
-                    </>
-                }
-              </button>
-            </div>
-          )
-        })}
-      </div>
+    <div className="tier-grid">
+      {tiers.map(tier => {
+        const owned  = currentLevel >= tier.level
+        const isNext = currentLevel === tier.level - 1
+        return (
+          <div key={tier.level} className={`tier-card${owned ? ' tier-card--owned' : ''}${isNext ? ' tier-card--next' : ''}`}>
+            <div className="tier-card__level">Tier {tier.level}</div>
+            <div className="tier-card__label">{tier.label}</div>
+            <div className="tier-card__desc">{tier.desc}</div>
+            <button
+              className="tier-card__btn"
+              disabled={owned || !isNext}
+            >
+              {owned
+                ? '✓ Owned'
+                : tier.coinCost === 0
+                  ? 'Free'
+                  : <><span className="tier-card__btn-icon">{currencyIcon}</span>{formatNum(tier.coinCost)}</>
+              }
+            </button>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -139,9 +135,9 @@ function TierSection({ color, cssClass, tiers, currentLevel, currency, currencyI
 // ── Main page ─────────────────────────────────────────────────────
 
 export default function UpgradesPage() {
-  const { activeChapter, setActiveChapter, coins, xp } = useStats()
+  const { activeChapter, setActiveChapter } = useStats()
 
-  // Stub state — not functional yet, just for design
+  // Stub state — not wired to game yet, just for design
   const [discardLevel, setDiscardLevel] = useState(0)
   const [speedLevel,   setSpeedLevel]   = useState(0)
 
@@ -160,14 +156,11 @@ export default function UpgradesPage() {
           subtitle="Keep cards you like — redraw the rest · paid with Coins"
         />
         <TierSection
-          color="#ef4444"
-          cssClass=""
           tiers={DISCARD_TIERS}
           currentLevel={discardLevel}
-          currency="coins"
           currencyIcon="$"
-          label="Discard"
         />
+        <div className="upgrades-section__footnote">Currently free for development testing.</div>
       </div>
 
       {/* Roll speed upgrade */}
@@ -175,20 +168,16 @@ export default function UpgradesPage() {
         <SectionHeader
           color="#3b82f6"
           icon="⚡"
-          title="Roll Speed"
-          subtitle="Reduce the time between auto-rolls · paid with Coins"
+          title="Draw Speed"
+          subtitle="Reduce the time between auto-draws · paid with Coins"
         />
         <TierSection
-          color="#3b82f6"
-          cssClass=""
           tiers={SPEED_TIERS}
           currentLevel={speedLevel}
-          currency="coins"
           currencyIcon="$"
-          label="Speed"
         />
+        <div className="upgrades-section__footnote">Currently free for development testing.</div>
       </div>
-
     </div>
   )
 }
