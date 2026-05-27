@@ -5,8 +5,9 @@ import StatsPage from './pages/StatsPage'
 import { StatsProvider } from './context/StatsContext'
 import { useStats } from './context/StatsContext'
 import { CHAPTERS } from './data/constants'
+import { formatNum } from './utils/format'
 import './styles/App.css'
- 
+
 const CoinIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="8" cy="8" r="7.5" fill="#c9a84c" stroke="#a07830" strokeWidth="1"/>
@@ -43,11 +44,11 @@ function Nav() {
       <div className="nav-economy">
         <div className="nav-economy__item">
           <CoinIcon />
-          <span className="nav-economy__value">{coins.toLocaleString()}</span>
+          <span className="nav-economy__value">{formatNum(coins)}</span>
         </div>
         <div className="nav-economy__item">
           <XpIcon />
-          <span className="nav-economy__value">{xp.toLocaleString()}</span>
+          <span className="nav-economy__value">{formatNum(xp)}</span>
         </div>
       </div>
       <div className="nav-links">
@@ -57,7 +58,7 @@ function Nav() {
     </nav>
   )
 }
- 
+
 export default function App() {
   return (
     <StatsProvider>

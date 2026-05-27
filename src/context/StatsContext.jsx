@@ -78,11 +78,19 @@ export function StatsProvider({ children }) {
   }, [coins, xp])
 
   function recordRoll(comboName) {
-    // Calculate reward: round(totalCombos / comboCombos)
-    const total     = CHAPTER_TOTALS[chId]
-    const combos    = COMBO_DETAILS_BY_CHAPTER[chId]
-    const combo     = combos.find(c => c.name === comboName)
-    const reward    = combo ? Math.round(total / combo.count) : 1
+    const total      = CHAPTER_TOTALS[chId]
+    const combos     = COMBO_DETAILS_BY_CHAPTER[chId]
+    const combo      = combos.find(c => c.name === comboName)
+    const tiers      = combos.length
+    // Chapter multiplier doubles each chapter: 1x, 2x, 4x, 8x, 16x
+    const chapterMul = Math.pow(2, chId - 1)
+    // payout = round( odds / tiers * chapterMul * 10 )
+    // - Dividing by tiers normalises total chapter EV regardless of tier count
+    // - chapterMul * 10 sets target chapter EV to 10, 20, 40, 80, 160
+    // - Ratios between combos are fully preserved (4x rarer = 4x coins)
+    const reward = combo
+      ? Math.round((total / combo.count) / tiers * chapterMul * 10)
+      : 1
 
     setCoins(prev => prev + reward)
     setXp(prev    => prev + reward)
