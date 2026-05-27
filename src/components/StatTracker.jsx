@@ -4,10 +4,10 @@ import { COMBOS_BY_CHAPTER } from '../data/constants'
 import './StatTracker.css'
 
 export default function StatTracker({ lastCombo }) {
-  const { activeChapter, totalRolls, rollCounts, resetStats } = useStats()
+  const { activeChapter, totalRolls, rollCounts } = useStats()
   const comboNames = COMBOS_BY_CHAPTER[activeChapter.id]
   const maxCount = Math.max(...comboNames.map(c => rollCounts[c] ?? 0), 1)
-  
+
   return (
     <div className="tracker">
       <div className="tracker__header">
@@ -17,14 +17,14 @@ export default function StatTracker({ lastCombo }) {
           <div className="tracker__total-label">Total rolls</div>
         </div>
       </div>
-  
+
       <div className="tracker__rows">
         {comboNames.map(name => {
           const count = rollCounts[name] ?? 0
           const pct   = totalRolls > 0 ? (count / totalRolls * 100).toFixed(1) + '%' : '—'
           const barW  = (count / maxCount * 100).toFixed(1) + '%'
           const isLast = name === lastCombo
-  
+
           return (
             <div key={name} className={`tracker__row${isLast ? ' tracker__row--highlight' : ''}`}>
               <div className="tracker__row-left">
@@ -41,8 +41,6 @@ export default function StatTracker({ lastCombo }) {
           )
         })}
       </div>
-  
-      <button className="tracker__reset-btn" onClick={resetStats}>Reset</button>
     </div>
   )
 }

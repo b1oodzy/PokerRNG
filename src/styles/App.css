@@ -5,7 +5,7 @@
   gap: 20px;
   width: 100%;
 }
- 
+
 .nav {
   display: flex;
   align-items: center;
@@ -17,88 +17,19 @@
   padding: 14px 24px;
   gap: 16px;
 }
- 
+
+/* Centre logo */
 .nav-logo {
   font-size: 16px;
   font-weight: 900;
   color: #c9a84c;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  flex-shrink: 0;
-}
- 
-/* Chapter buttons — center group */
-.nav-chapters {
-  display: flex;
-  gap: 6px;
   flex: 1;
-  justify-content: center;
-}
- 
-.nav-chapter {
-  background: transparent;
-  border: 2px solid #13321f;
-  border-radius: 99px;
-  color: #4a7a60;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  padding: 7px 14px;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-family: 'Nunito', sans-serif;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
-  white-space: nowrap;
-}
- 
-.nav-chapter:hover {
-  border-color: #5a9e78;
-  color: #5a9e78;
-}
- 
-.nav-chapter--active {
-  background: #13321f;
-  border-color: #c9a84c;
-  color: #c9a84c;
-}
- 
-.nav-chapter--active:hover {
-  border-color: #d4b05a;
-  color: #d4b05a;
-}
- 
-/* Page links — right group */
-.nav-links {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
- 
-.nav-link {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: #4a7a60;
-  padding: 8px 20px;
-  border-radius: 99px;
-  transition: background 0.15s, color 0.15s;
-}
- 
-.nav-link:hover { color: #5a9e78; }
- 
-.nav-link.active {
-  background: #13321f;
-  color: #c9a84c;
-}
- 
-.main {
-  display: flex;
-  justify-content: center;
-  width: var(--nav-width);
+  text-align: center;
 }
 
+/* Left: economy */
 .nav-economy {
   display: flex;
   gap: 12px;
@@ -124,4 +55,37 @@
   font-weight: 900;
   color: #c9a84c;
   letter-spacing: 0.04em;
+}
+
+/* Right: page links */
+.nav-links {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+
+.nav-link {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #4a7a60;
+  padding: 8px 20px;
+  border-radius: 99px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-link:hover { color: #5a9e78; }
+
+.nav-link.active {
+  background: #13321f;
+  color: #c9a84c;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  width: var(--nav-width);
 }

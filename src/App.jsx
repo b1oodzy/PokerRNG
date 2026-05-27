@@ -2,9 +2,9 @@ import React from 'react'
 import { Routes, Route, NavLink } from 'react-router-dom'
 import GamePage from './pages/GamePage'
 import StatsPage from './pages/StatsPage'
+import UpgradesPage from './pages/UpgradesPage'
 import { StatsProvider } from './context/StatsContext'
 import { useStats } from './context/StatsContext'
-import { CHAPTERS } from './data/constants'
 import { formatNum } from './utils/format'
 import './styles/App.css'
 
@@ -25,22 +25,11 @@ const XpIcon = () => (
 )
 
 function Nav() {
-  const { activeChapter, setActiveChapter, coins, xp } = useStats()
+  const { coins, xp } = useStats()
 
   return (
     <nav className="nav">
-      <div className="nav-logo">Poker RNG</div>
-      <div className="nav-chapters">
-        {CHAPTERS.map(ch => (
-          <button
-            key={ch.id}
-            className={`nav-chapter${activeChapter.id === ch.id ? ' nav-chapter--active' : ''}`}
-            onClick={() => setActiveChapter(ch)}
-          >
-            {ch.name}
-          </button>
-        ))}
-      </div>
+      {/* Left: economy */}
       <div className="nav-economy">
         <div className="nav-economy__item">
           <CoinIcon />
@@ -51,9 +40,15 @@ function Nav() {
           <span className="nav-economy__value">{formatNum(xp)}</span>
         </div>
       </div>
+
+      {/* Centre: logo */}
+      <div className="nav-logo">Poker RNG</div>
+
+      {/* Right: page links */}
       <div className="nav-links">
-        <NavLink to="/"     end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Game</NavLink>
-        <NavLink to="/stats"    className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Stats</NavLink>
+        <NavLink to="/"        end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Game</NavLink>
+        <NavLink to="/upgrades"    className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Upgrades</NavLink>
+        <NavLink to="/stats"       className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Stats</NavLink>
       </div>
     </nav>
   )
@@ -66,8 +61,9 @@ export default function App() {
         <Nav />
         <main className="main">
           <Routes>
-            <Route path="/"      element={<GamePage />} />
-            <Route path="/stats" element={<StatsPage />} />
+            <Route path="/"         element={<GamePage />} />
+            <Route path="/upgrades" element={<UpgradesPage />} />
+            <Route path="/stats"    element={<StatsPage />} />
           </Routes>
         </main>
       </div>
