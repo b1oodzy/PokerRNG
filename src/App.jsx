@@ -32,12 +32,12 @@ function Nav() {
       {/* Left: economy */}
       <div className="nav-economy">
         <div className="nav-economy__item">
-          <CoinIcon />
-          <span className="nav-economy__value">{formatNum(coins)}</span>
-        </div>
-        <div className="nav-economy__item">
           <XpIcon />
           <span className="nav-economy__value">{formatNum(xp)}</span>
+        </div>
+        <div className="nav-economy__item">
+          <CoinIcon />
+          <span className="nav-economy__value">{formatNum(coins)}</span>
         </div>
       </div>
 

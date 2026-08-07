@@ -1,38 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useStats } from '../context/StatsContext'
 import { CHAPTERS } from '../data/constants'
 import { formatNum } from '../utils/format'
 import './UpgradesPage.css'
 
-// ── Chapter upgrade data ──────────────────────────────────────────
-const CHAPTER_UPGRADES = CHAPTERS.map((ch, i) => ({
-  id:    ch.id,
-  name:  ch.name,
-  desc:  [
-    'Roll a single card. Learn the basics.',
-    'Draw two cards. Pairs and suited connectors emerge.',
-    'Three-card flops unlock straights and flushes.',
-    'Four-card hands — full poker tactics apply.',
-    'Five cards. The complete game begins.',
-  ][i],
-  xpCost: 0,
-}))
+// ── Upgrade Data ─────────────────────────────────────────────────────────────
 
-// ── Discard upgrade tiers (free for dev testing) ──────────────────
+const CARD_TIERS = [
+  { level: 1, label: '1 Card',  xpCost: 0 },
+  { level: 2, label: '2 Cards', xpCost: 500 },
+  { level: 3, label: '3 Cards', xpCost: 12000 },
+  { level: 4, label: '4 Cards', xpCost: 400000 },
+  { level: 5, label: '5 Cards', xpCost: 10000000 },
+  { level: 6, label: '6 Cards', xpCost: 200000000 },
+]
+
 const DISCARD_TIERS = [
-  { level: 1, label: '1 Discard',  coinCost: 0,  desc: 'Keep your best card, redraw the rest.' },
-  { level: 2, label: '2 Discards', coinCost: 0,  desc: 'Two chances to improve your hand.' },
-  { level: 3, label: '3 Discards', coinCost: 0,  desc: 'Master-level control over your draw.' },
+  { level: 1, label: '1 Discard',  coinCost: 12500 },
+  { level: 2, label: '2 Discards', coinCost: 400000 },
+  { level: 3, label: '3 Discards', coinCost: 10000000 },
 ]
 
-// ── Roll speed upgrade tiers (free for dev testing) ───────────────
-const SPEED_TIERS = [
-  { level: 1, label: 'Fast',    coinCost: 0, desc: 'Auto-draw every 1.5 seconds.' },
-  { level: 2, label: 'Faster',  coinCost: 0, desc: 'Auto-draw every 1 second.' },
-  { level: 3, label: 'Instant', coinCost: 0, desc: 'Auto-draw at maximum speed.' },
-]
-
-// ── Sub-components ────────────────────────────────────────────────
+// ── Sub-components ──────────────────────────────────────────────────────────
 
 function SectionHeader({ color, icon, title, subtitle }) {
   return (
@@ -46,18 +35,18 @@ function SectionHeader({ color, icon, title, subtitle }) {
   )
 }
 
-function ChapterSection({ activeChapter, setActiveChapter }) {
+function ChapterSection({ activeChapter, setActiveChapter, isChapterUnlocked }) {
   const idx     = CHAPTERS.findIndex(ch => ch.id === activeChapter.id)
-  const canPrev = idx > 0
-  const canNext = idx < CHAPTERS.length - 1
+  const canPrev = idx > 0 && isChapterUnlocked(CHAPTERS[idx - 1].id)
+  const canNext = idx < CHAPTERS.length - 1 && isChapterUnlocked(CHAPTERS[idx + 1].id)
 
   return (
     <div className="upgrades-section upgrades-section--purple">
       <SectionHeader
         color="#a855f7"
         icon="◈"
-        title="Chapter Unlock"
-        subtitle="Progress through the game — paid with XP"
+        title="Chapter Selection"
+        subtitle="Chapters unlock automatically by getting all combinations in the previous chapter and owning enough cards."
       />
 
       <div className="chapter-selector">
@@ -70,18 +59,19 @@ function ChapterSection({ activeChapter, setActiveChapter }) {
         <div className="chapter-selector__cards">
           {CHAPTERS.map((ch, i) => {
             const isActive = ch.id === activeChapter.id
-            const upgrade  = CHAPTER_UPGRADES[i]
+            const unlocked = isChapterUnlocked(ch.id)
+            
             return (
               <div
                 key={ch.id}
-                className={`chapter-card${isActive ? ' chapter-card--active' : ''}`}
-                onClick={() => setActiveChapter(ch)}
+                className={`chapter-card${isActive ? ' chapter-card--active' : ''}${!unlocked ? ' chapter-card--locked' : ''}`}
+                onClick={() => unlocked && setActiveChapter(ch)}
               >
                 <div className="chapter-card__name">{ch.name}</div>
-                <div className="chapter-card__desc">{upgrade.desc}</div>
                 <div className="chapter-card__cost">
-                  <span className="chapter-card__cost-icon">★</span>
-                  <span>{upgrade.xpCost === 0 ? 'Free' : formatNum(upgrade.xpCost) + ' XP'}</span>
+                  {unlocked 
+                    ? <span>Unlocked</span> 
+                    : <><span className="chapter-card__cost-icon">🔒</span><span>Locked</span></>}
                 </div>
                 {isActive && <div className="chapter-card__active-dot" />}
               </div>
@@ -95,34 +85,33 @@ function ChapterSection({ activeChapter, setActiveChapter }) {
           disabled={!canNext}
         >›</button>
       </div>
-
-      <div className="upgrades-section__footnote">
-        Currently free for development testing.
-      </div>
     </div>
   )
 }
 
-function TierSection({ tiers, currentLevel, currencyIcon }) {
+function TierSection({ tiers, currentLevel, currencyIcon, onBuy, userBal, costKey, accent }) {
   return (
-    <div className="tier-grid">
+    <div className="tier-grid" style={{ '--tier-accent': accent }}>
       {tiers.map(tier => {
         const owned  = currentLevel >= tier.level
         const isNext = currentLevel === tier.level - 1
+        const cost   = tier[costKey]
+        const canAfford = userBal >= cost
+
         return (
           <div key={tier.level} className={`tier-card${owned ? ' tier-card--owned' : ''}${isNext ? ' tier-card--next' : ''}`}>
             <div className="tier-card__level">Tier {tier.level}</div>
             <div className="tier-card__label">{tier.label}</div>
-            <div className="tier-card__desc">{tier.desc}</div>
             <button
               className="tier-card__btn"
-              disabled={owned || !isNext}
+              disabled={owned || !isNext || (!owned && !canAfford)}
+              onClick={() => onBuy(tier)}
             >
               {owned
                 ? '✓ Owned'
-                : tier.coinCost === 0
+                : cost === 0
                   ? 'Free'
-                  : <><span className="tier-card__btn-icon">{currencyIcon}</span>{formatNum(tier.coinCost)}</>
+                  : <><span className="tier-card__btn-icon">{currencyIcon}</span>{formatNum(cost)}</>
               }
             </button>
           </div>
@@ -132,20 +121,57 @@ function TierSection({ tiers, currentLevel, currencyIcon }) {
   )
 }
 
-// ── Main page ─────────────────────────────────────────────────────
+// ── Main page ───────────────────────────────────────────────────────────────
 
 export default function UpgradesPage() {
-  const { activeChapter, setActiveChapter } = useStats()
+  const { 
+    activeChapter, setActiveChapter, isChapterUnlocked,
+    unlockedCards, setUnlockedCards, 
+    discardLevel, setDiscardLevel, 
+    xp, setXp, 
+    coins, setCoins 
+  } = useStats()
 
-  // Stub state — not wired to game yet, just for design
-  const [discardLevel, setDiscardLevel] = useState(0)
-  const [speedLevel,   setSpeedLevel]   = useState(0)
+  function buyCard(tier) {
+    if (xp >= tier.xpCost && unlockedCards === tier.level - 1) {
+      setXp(x => x - tier.xpCost)
+      setUnlockedCards(tier.level)
+    }
+  }
+
+  function buyDiscard(tier) {
+    if (coins >= tier.coinCost && discardLevel === tier.level - 1) {
+      setCoins(c => c - tier.coinCost)
+      setDiscardLevel(tier.level)
+    }
+  }
 
   return (
     <div className="upgrades-page">
+      <ChapterSection 
+        activeChapter={activeChapter} 
+        setActiveChapter={setActiveChapter} 
+        isChapterUnlocked={isChapterUnlocked} 
+      />
 
-      {/* Chapter unlock */}
-      <ChapterSection activeChapter={activeChapter} setActiveChapter={setActiveChapter} />
+      {/* Cards unlock */}
+      <div className="upgrades-section upgrades-section--blue">
+        <SectionHeader
+          color="#3b82f6"
+          icon="🃏"
+          title="Additional Cards"
+          subtitle="Increase the maximum cards you can hold · paid with XP"
+        />
+        <TierSection
+          tiers={CARD_TIERS}
+          currentLevel={unlockedCards}
+          currencyIcon="★"
+          onBuy={buyCard}
+          userBal={xp}
+          costKey="xpCost"
+          accent="#3b82f6"
+        />
+      </div>
 
       {/* Discard upgrade */}
       <div className="upgrades-section upgrades-section--red">
@@ -159,24 +185,11 @@ export default function UpgradesPage() {
           tiers={DISCARD_TIERS}
           currentLevel={discardLevel}
           currencyIcon="$"
+          onBuy={buyDiscard}
+          userBal={coins}
+          costKey="coinCost"
+          accent="#ef4444"
         />
-        <div className="upgrades-section__footnote">Currently free for development testing.</div>
-      </div>
-
-      {/* Roll speed upgrade */}
-      <div className="upgrades-section upgrades-section--blue">
-        <SectionHeader
-          color="#3b82f6"
-          icon="⚡"
-          title="Draw Speed"
-          subtitle="Reduce the time between auto-draws · paid with Coins"
-        />
-        <TierSection
-          tiers={SPEED_TIERS}
-          currentLevel={speedLevel}
-          currencyIcon="$"
-        />
-        <div className="upgrades-section__footnote">Currently free for development testing.</div>
       </div>
     </div>
   )

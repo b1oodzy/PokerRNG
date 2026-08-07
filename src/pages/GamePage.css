@@ -37,9 +37,10 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  justify-content: center;
 }
 
-/* ── Draw / Play button ───────────────────────────────── */
+/* ── Draw / Play button ───────────────────────────── */
 .roll-btn {
   background: #c9a84c;
   border: none;
@@ -65,7 +66,7 @@
 }
 .roll-btn:hover:not(:disabled)  { background: #d4b05a; }
 .roll-btn:active:not(:disabled) { background: #b8943e; transform: scale(0.96); }
-.roll-btn:disabled               { opacity: 0.4; cursor: not-allowed; }
+.roll-btn:disabled                { opacity: 0.4; cursor: not-allowed; }
 
 /* Fixed-width label so badge + hint don't shift when Draw↔Play */
 .roll-btn__label {
@@ -111,41 +112,7 @@
   z-index: 1;
 }
 
-/* ── Auto draw button ─────────────────────────────────── */
-.auto-btn {
-  background: transparent;
-  border: 2px solid #13321f;
-  border-radius: 50px;
-  color: #4a7a60;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  padding: 13px 24px;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-family: 'Nunito', sans-serif;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-.auto-btn:hover { border-color: #5a9e78; color: #5a9e78; }
-.auto-btn--active {
-  background: #13321f;
-  border-color: #c9a84c;
-  color: #c9a84c;
-}
-.auto-btn--active:hover {
-  background: #13321f;
-  border-color: #d4b05a;
-  color: #d4b05a;
-}
-.auto-btn > *:not(.btn-cooldown-bar) {
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Cooldown bar (shared) ────────────────────────────── */
+/* ── Cooldown bar ────────────────────────── */
 .btn-cooldown-bar {
   position: absolute;
   top: 0;

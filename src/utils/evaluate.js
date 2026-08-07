@@ -1,9 +1,9 @@
 import { RANKS, SUITS } from '../data/constants'
-import { 
-  COMBOS_CH1, COMBOS_CH2, COMBOS_CH3, COMBOS_CH4, COMBOS_CH5 
+import {
+  COMBOS_CH1, COMBOS_CH2, COMBOS_CH3, COMBOS_CH4, COMBOS_CH5,
+  COMBO_DETAILS_BY_CHAPTER
 } from '../data/constants'
 
-// Helper maps for quick lookup of flavor text
 const FLAVOR_MAP = {
   1: Object.fromEntries(COMBOS_CH1.map(c => [c.name, c.flavor])),
   2: Object.fromEntries(COMBOS_CH2.map(c => [c.name, c.flavor])),
@@ -12,23 +12,15 @@ const FLAVOR_MAP = {
   5: Object.fromEntries(COMBOS_CH5.map(c => [c.name, c.flavor])),
 }
 
-/**
- * Helper: check if values form a straight (including wheel A-2-3-4-5)
- */
 function isStraight(vals) {
   const unique = [...new Set(vals)]
   if (unique.length !== vals.length) return false
   const sorted = unique.sort((a, b) => a - b)
-  // Normal straight
   if (sorted[sorted.length - 1] - sorted[0] === sorted.length - 1) return true
-  // Wheel: A-2-3-4-5 (values: 2,3,4,5,14)
   if (sorted.join(',') === '2,3,4,5,14') return true
   return false
 }
 
-/**
- * Helper: count suit frequencies
- */
 function suitCounts(hand) {
   const counts = {}
   for (const c of hand) {
@@ -38,9 +30,6 @@ function suitCounts(hand) {
   return counts
 }
 
-/**
- * Helper: count rank frequencies
- */
 function rankCounts(hand) {
   const counts = {}
   for (const c of hand) {
@@ -50,38 +39,32 @@ function rankCounts(hand) {
   return counts
 }
 
-/**
- * Evaluate Chapter 1 (1 card)
- */
 function evaluateCh1(hand) {
   const card = hand[0]
   const rank = card.rank
   const suit = card.suit
-  
+
   let name = ''
   if (rank.v === 14 && suit.name === 'Spades') name = 'Ace of Spades'
   else if (rank.v === 14) name = 'Stray Bullets'
   else if (rank.v >= 11 && rank.v <= 13) name = 'Paint Cards'
   else name = 'Pip Cards'
 
-  return { 
-    rank: name, 
+  return {
+    rank: name,
     desc: COMBOS_CH1.find(c => c.name === name)?.desc || '',
     flavor: FLAVOR_MAP[1][name] || ''
   }
 }
 
-/**
- * Evaluate Chapter 2 (2 cards)
- */
 function evaluateCh2(hand) {
   const vals = hand.map(c => c.rank.v).sort((a, b) => a - b)
   const suits = hand.map(c => c.suit.name)
   const isSuited = suits[0] === suits[1]
   const isPair = vals[0] === vals[1]
-  const isAK = vals[0] === 13 && vals[1] === 14 // K, A
+  const isAK = vals[0] === 13 && vals[1] === 14 
   const isConnector = (vals[1] - vals[0] === 1) || (vals[0] === 2 && vals[1] === 14)
-  
+
   let name = ''
   if (isAK && isSuited) name = 'Kalashnikovs'
   else if (isPair && vals[0] === 14) name = 'Pocket Rockets'
@@ -92,28 +75,25 @@ function evaluateCh2(hand) {
   else if (isSuited) name = 'Suited'
   else name = 'High Card'
 
-  return { 
-    rank: name, 
+  return {
+    rank: name,
     desc: COMBOS_CH2.find(c => c.name === name)?.desc || '',
     flavor: FLAVOR_MAP[2][name] || ''
   }
 }
 
-/**
- * Evaluate Chapter 3 (3 cards)
- */
 function evaluateCh3(hand) {
   const vals = hand.map(c => c.rank.v).sort((a, b) => a - b)
   const sc = suitCounts(hand)
   const rc = rankCounts(hand)
   const counts = Object.values(rc).sort((a, b) => b - a)
   const suitVals = Object.values(sc)
-  
+
   const isStraight3 = isStraight(vals)
   const isMonotone = suitVals.some(c => c === 3)
   const isTwoTone = suitVals.some(c => c === 2) && !isMonotone
   const isRainbow = suitVals.every(c => c === 1)
-  
+
   let name = ''
   if (rc[14] === 3) name = 'Triple Aces'
   else if (vals.join(',') === '12,13,14' && isMonotone) name = 'Royal Flush'
@@ -126,26 +106,23 @@ function evaluateCh3(hand) {
   else if (isRainbow) name = 'Rainbow Flop'
   else name = 'Two-Tone Flop'
 
-  return { 
-    rank: name, 
+  return {
+    rank: name,
     desc: COMBOS_CH3.find(c => c.name === name)?.desc || '',
     flavor: FLAVOR_MAP[3][name] || ''
   }
 }
 
-/**
- * Evaluate Chapter 4 (4 cards)
- */
 function evaluateCh4(hand) {
   const vals = hand.map(c => c.rank.v).sort((a, b) => a - b)
   const sc = suitCounts(hand)
   const rc = rankCounts(hand)
   const counts = Object.values(rc).sort((a, b) => b - a)
   const suitVals = Object.values(sc)
-  
+
   const isStraight4 = isStraight(vals)
   const isFlush4 = suitVals.some(c => c === 4)
-  
+
   let name = ''
   if (rc[14] === 4) name = 'Quad Aces'
   else if (vals.join(',') === '11,12,13,14' && isFlush4) name = 'Royal Flush'
@@ -162,26 +139,23 @@ function evaluateCh4(hand) {
   }
   else name = 'High Card'
 
-  return { 
-    rank: name, 
+  return {
+    rank: name,
     desc: COMBOS_CH4.find(c => c.name === name)?.desc || '',
     flavor: FLAVOR_MAP[4][name] || ''
   }
 }
 
-/**
- * Evaluate Chapter 5 (5 cards) - Standard poker hands
- */
 function evaluateCh5(hand) {
   const vals = hand.map(c => c.rank.v).sort((a, b) => a - b)
   const suits = hand.map(c => c.suit.name)
   const sc = suitCounts(hand)
   const rc = rankCounts(hand)
   const counts = Object.values(rc).sort((a, b) => b - a)
-  
+
   const isFlush = suits.every(s => s === suits[0])
   const isStr = isStraight(vals)
-  
+
   let name = ''
   if (isFlush && isStr) {
     const isRoyal = vals.join(',') === '10,11,12,13,14'
@@ -199,22 +173,33 @@ function evaluateCh5(hand) {
   else if (counts[0] === 2) name = 'One Pair'
   else name = 'High Card'
 
-  return { 
-    rank: name, 
+  return {
+    rank: name,
     desc: COMBOS_CH5.find(c => c.name === name)?.desc || '',
     flavor: FLAVOR_MAP[5][name] || ''
   }
 }
 
-/**
- * Main evaluate function
- * @param {Array} hand - Array of { suit, rank } card objects
- * @param {number} chapterId - The chapter ID (1-5)
- * @returns {{ rank: string, desc: string, flavor: string }}
- */
-export function evaluate(hand, chapterId) {
-  const ch = chapterId ?? hand.length
-  switch (ch) {
+// ── Subset Evaluator for Variable Hand Sizes ─────────────────────────────────
+function getSubsets(array, size) {
+  let result = [];
+  function combine(start, current) {
+    if (current.length === size) {
+      result.push([...current]);
+      return;
+    }
+    for (let i = start; i < array.length; i++) {
+      current.push(array[i]);
+      combine(i + 1, current);
+      current.pop();
+    }
+  }
+  combine(0, []);
+  return result;
+}
+
+function evaluateExact(hand, chapterId) {
+  switch (chapterId) {
     case 1: return evaluateCh1(hand)
     case 2: return evaluateCh2(hand)
     case 3: return evaluateCh3(hand)
@@ -222,4 +207,37 @@ export function evaluate(hand, chapterId) {
     case 5: return evaluateCh5(hand)
     default: return evaluateCh5(hand)
   }
+}
+
+/**
+ * Main evaluate function
+ * Generates subsets to properly evaluate internal game logic if the player 
+ * owns more cards than required by the chapter rules.
+ * @param {Array} hand - Array of { suit, rank } card objects
+ * @param {number} chapterId - The chapter ID (1-5)
+ * @returns {{ rank: string, desc: string, flavor: string }}
+ */
+export function evaluate(hand, chapterId) {
+  const ch = chapterId ?? hand.length
+  
+  if (hand.length <= ch) {
+    return evaluateExact(hand, ch)
+  }
+
+  // Determine the best sub-hand for the active chapter when extra cards are held
+  const subsets = getSubsets(hand, ch)
+  let bestResult = null
+  let bestIndex = Infinity
+  const combosArray = COMBO_DETAILS_BY_CHAPTER[ch]
+
+  for (const sub of subsets) {
+    const res = evaluateExact(sub, ch)
+    const idx = combosArray.findIndex(c => c.name === res.rank)
+    if (idx !== -1 && idx < bestIndex) {
+      bestIndex = idx
+      bestResult = res
+    }
+  }
+  
+  return bestResult
 }

@@ -40,9 +40,9 @@ function loadEconomy() {
   }
 }
 
-function saveEconomy(coins, xp) {
+function saveEconomy(coins, xp, unlockedCards, discardLevel) {
   try {
-    localStorage.setItem('pokerRollerEconomy', JSON.stringify({ coins, xp }))
+    localStorage.setItem('pokerRollerEconomy', JSON.stringify({ coins, xp, unlockedCards, discardLevel }))
   } catch {}
 }
 
@@ -61,6 +61,8 @@ export function StatsProvider({ children }) {
   const saved = loadEconomy()
   const [coins, setCoins] = useState(saved?.coins ?? 0)
   const [xp,    setXp]    = useState(saved?.xp    ?? 0)
+  const [unlockedCards, setUnlockedCards] = useState(saved?.unlockedCards ?? 1)
+  const [discardLevel, setDiscardLevel]   = useState(saved?.discardLevel ?? 0)
 
   const chId       = activeChapter.id
   const totalRolls = statsMap[chId]?.totalRolls ?? 0
@@ -74,20 +76,26 @@ export function StatsProvider({ children }) {
   }, [statsMap])
 
   useEffect(() => {
-    saveEconomy(coins, xp)
-  }, [coins, xp])
+    saveEconomy(coins, xp, unlockedCards, discardLevel)
+  }, [coins, xp, unlockedCards, discardLevel])
+
+  function isChapterUnlocked(chId) {
+    if (chId === 1) return true;
+    if (unlockedCards < chId) return false;
+    
+    // Check if the previous chapter has at least 1 of each roll
+    const prevCombos = COMBOS_BY_CHAPTER[chId - 1];
+    const prevStats = statsMap[chId - 1]?.rollCounts || {};
+    return prevCombos.every(c => prevStats[c] > 0);
+  }
 
   function recordRoll(comboName) {
     const total      = CHAPTER_TOTALS[chId]
     const combos     = COMBO_DETAILS_BY_CHAPTER[chId]
     const combo      = combos.find(c => c.name === comboName)
     const tiers      = combos.length
-    // Chapter multiplier doubles each chapter: 1x, 2x, 4x, 8x, 16x
     const chapterMul = Math.pow(2, chId - 1)
-    // payout = round( odds / tiers * chapterMul * 10 )
-    // - Dividing by tiers normalises total chapter EV regardless of tier count
-    // - chapterMul * 10 sets target chapter EV to 10, 20, 40, 80, 160
-    // - Ratios between combos are fully preserved (4x rarer = 4x coins)
+    
     const reward = combo
       ? Math.round((total / combo.count) / tiers * chapterMul * 10)
       : 1
@@ -111,15 +119,20 @@ export function StatsProvider({ children }) {
   }
 
   function resetStats() {
-    setStatsMap(prev => ({
-      ...prev,
-      [chId]: emptyStats(chId),
-    }))
+    setStatsMap(prev => {
+      const next = { ...prev }
+      for (const ch of CHAPTERS) next[ch.id] = emptyStats(ch.id)
+      return next
+    })
+    setActiveChapter(CHAPTERS[0])
   }
 
   function resetEconomy() {
     setCoins(0)
     setXp(0)
+    setUnlockedCards(1)
+    setDiscardLevel(0)
+    setActiveChapter(CHAPTERS[0])
   }
 
   return (
@@ -130,9 +143,12 @@ export function StatsProvider({ children }) {
       rollCounts,
       recordRoll,
       resetStats,
-      coins,
-      xp,
+      coins, setCoins,
+      xp, setXp,
       resetEconomy,
+      unlockedCards, setUnlockedCards,
+      discardLevel, setDiscardLevel,
+      isChapterUnlocked,
     }}>
       {children}
     </StatsContext.Provider>

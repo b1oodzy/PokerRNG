@@ -1,3 +1,4 @@
+/* Keep existing code up to chapter-card--active */
 .upgrades-page {
   width: var(--nav-width);
   display: flex;
@@ -5,7 +6,7 @@
   gap: 16px;
 }
 
-/* ── Section shell ─────────────────────────────────────── */
+/* ── Section shell ───────────────────────────────────── */
 .upgrades-section {
   border-radius: 25px;
   border: 5px solid #13321f;
@@ -21,7 +22,7 @@
 .upgrades-section--red    { border-left: 8px solid #ef4444; }
 .upgrades-section--blue   { border-left: 8px solid #3b82f6; }
 
-/* ── Section header ────────────────────────────────────── */
+/* ── Section header ──────────────────────────────────── */
 .upgrades-section__header {
   display: flex;
   align-items: center;
@@ -59,7 +60,7 @@
   text-align: center;
 }
 
-/* ── Chapter selector ──────────────────────────────────── */
+/* ── Chapter selector ────────────────────────────────── */
 .chapter-selector {
   display: flex;
   align-items: center;
@@ -100,7 +101,7 @@
   overflow: hidden;
 }
 
-/* ── Chapter card ──────────────────────────────────────── */
+/* ── Chapter card ────────────────────────────────────── */
 .chapter-card {
   flex: 1;
   background: #13321f;
@@ -111,17 +112,21 @@
   flex-direction: column;
   gap: 6px;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.15s, background 0.15s, opacity 0.15s;
   position: relative;
   min-width: 0;
 }
-.chapter-card:hover {
+.chapter-card:hover:not(.chapter-card--locked) {
   border-color: #7c3aed;
   background: #1a1036;
 }
 .chapter-card--active {
   border-color: #a855f7;
   background: #1e1040;
+}
+.chapter-card--locked {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .chapter-card__name {
@@ -152,7 +157,6 @@
 }
 
 .chapter-card__cost-icon {
-  color: #3b82f6;
   font-size: 10px;
 }
 
@@ -167,14 +171,14 @@
   box-shadow: 0 0 6px #a855f7;
 }
 
-/* ── Tier grid ─────────────────────────────────────────── */
+/* ── Tier grid ───────────────────────────────────────── */
 .tier-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 
-/* ── Tier card ─────────────────────────────────────────── */
+/* ── Tier card ───────────────────────────────────────── */
 .tier-card {
   background: #13321f;
   border: 2px solid #0d2416;
